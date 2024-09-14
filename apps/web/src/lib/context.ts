@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "./auth";
+import authOptions  from "./auth";
 
 export async function createContext({ req, res }) {
   const session = await getServerSession(req, res, authOptions);

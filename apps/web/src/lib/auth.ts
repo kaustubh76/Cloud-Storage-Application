@@ -1,11 +1,13 @@
 import NextAuth from "next-auth";
-import PasskeyProvider from "@next-auth/passkey";
+import PassKeyProvider from "next-auth/providers/passkey";
 import { DrizzleAdapter } from "next-auth/drizzle-adapter";
-import { db } from "./db";
+import { db } from "../../db";
+
+import { SessionStrategy } from "next-auth";
 
 const options = {
   providers: [
-    PasskeyProvider({
+    PassKeyProvider({
       name: "Passkey",
       type: "passkey",
       // Additional Passkey configuration
@@ -14,7 +16,7 @@ const options = {
   adapter: DrizzleAdapter(db),
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as SessionStrategy,
   },
 };
 
