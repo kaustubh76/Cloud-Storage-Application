@@ -1,7 +1,7 @@
 import { router, publicProcedure } from '../../../lib/trpc';
 import { z } from 'zod';
 import { db } from '../../db';
-
+import { photos } from '../../db/schema';
 export const photoRouter = router({
   uploadPhoto: publicProcedure
     .input(z.object({
@@ -10,21 +10,29 @@ export const photoRouter = router({
       url: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.session?.user?.id) {
+      // Check if user is authenticated
+      const userId = ctx.session?.user?.id;
+      if (!userId) {
         throw new Error('Unauthorized');
       }
-      return await db.insertInto('photos').values({
-        userId: ctx.session.user.id,
+
+      // Insert photo record into the database
+      return await db.insert(photos).values({
+        userId,
         filename: input.filename,
         size: input.size,
         url: input.url,
+        uploadDate: new Date(),
       }).returning();
     }),
+
   getPhotos: publicProcedure.query(async ({ ctx }) => {
-    if (!ctx.session?.user?.id) {
+    const userId = ctx.session?.user?.id;
+    if (!userId) {
       throw new Error('Unauthorized');
     }
-    return await db.select().from('photos').where('user_id', ctx.session.user.id);
+
+    // Fetch photos for the authenticated user
+    return await db.select().from(photos).where('user_id', userId);
   }),
-  
 });

@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import PassKeyProvider from "next-auth/providers/passkey";
-import { DrizzleAdapter } from "next-auth/drizzle-adapter";
-import { db } from "../../db";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "./../server/db";
 
 import { SessionStrategy } from "next-auth";
 

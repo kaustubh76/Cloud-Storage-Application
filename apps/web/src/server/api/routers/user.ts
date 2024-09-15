@@ -1,4 +1,3 @@
-// apps/web/src/server/api/routers/user.ts
 import { router, publicProcedure } from '../../../lib/trpc';
 import { z } from 'zod';
 import { db } from '../../db';

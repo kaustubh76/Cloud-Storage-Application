@@ -1,9 +1,22 @@
-import { getServerSession } from "next-auth";
-import authOptions  from "./auth";
+import { getServerSession } from 'next-auth';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { authOptions } from '@/lib/auth';
+import { Session } from 'next-auth';
 
-export async function createContext({ req, res }) {
-  const session = await getServerSession(req, res, authOptions);
-  return { session };
+// Define the context for tRPC
+export interface Context {
+  req: NextApiRequest;
+  res: NextApiResponse;
+  session: Session | null;  // Make session optional since it may not always be present
 }
 
-export type Context = ReturnType<typeof createContext>;
+// Create the context object
+export async function createContext({ req, res }: { req: NextApiRequest; res: NextApiResponse }) {
+  const session = await getServerSession(req, res, authOptions);
+
+  return {
+    req,
+    res,
+    session,
+  };
+}
