@@ -15,6 +15,7 @@ const options = {
   ],
   adapter: DrizzleAdapter(db),
   secret: process.env.NEXTAUTH_SECRET,
+  experimental: { enableWebAuthn: true },
   session: {
     strategy: "jwt" as SessionStrategy,
   },

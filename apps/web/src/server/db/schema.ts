@@ -5,6 +5,7 @@ export const users = pgTable('users', {
   name: varchar('name', { length: 256 }).notNull(),
   email: varchar('email', { length: 256 }).unique().notNull(),
   createdAt: timestamp('created_at').defaultNow(),
+  
 });
 
 export const files = pgTable('files', {
@@ -34,9 +35,22 @@ export const photos = pgTable('photos', {
   uploadDate: timestamp('upload_date').defaultNow(),
 });
 
+export const authenticators = pgTable('authenticators', {
+  id: text('id').primaryKey().notNull(),
+  credentialID: text('credential_id').unique().notNull(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  providerAccountId: text('provider_account_id').notNull(),
+  credentialPublicKey: text('credential_public_key').notNull(),
+  counter: integer('counter').notNull(),
+  credentialDeviceType: text('credential_device_type').notNull(),
+  credentialBackedUp: boolean('credential_backed_up').notNull(),
+  transports: text('transports'),
+});
+
 export const schema = {
   users,
   files,
   notes,
   photos,
+  authenticators,
 };

@@ -2,6 +2,9 @@ import { router, publicProcedure } from '../../../lib/trpc';
 import { z } from 'zod';
 import { db } from '../../db';
 import { photos } from '../../db/schema';
+import { eq } from 'drizzle-orm';
+
+
 export const photoRouter = router({
   uploadPhoto: publicProcedure
     .input(z.object({
@@ -18,7 +21,7 @@ export const photoRouter = router({
 
       // Insert photo record into the database
       return await db.insert(photos).values({
-        userId,
+        userId: Number(userId),
         filename: input.filename,
         size: input.size,
         url: input.url,
@@ -33,6 +36,6 @@ export const photoRouter = router({
     }
 
     // Fetch photos for the authenticated user
-    return await db.select().from(photos).where('user_id', userId);
+    return await db.select().from(photos).where(eq(photos.userId, Number(userId)));
   }),
 });

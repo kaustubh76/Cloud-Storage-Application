@@ -2,6 +2,8 @@ import { router, publicProcedure } from '../../../lib/trpc';
 import { z } from 'zod';
 import { db } from '../../db';
 import { notes } from '../../db/schema';
+import { eq } from 'drizzle-orm';
+
 
 export const noteRouter = router({
   createNote: publicProcedure
@@ -11,7 +13,7 @@ export const noteRouter = router({
     }))
     .mutation(async ({ input, ctx }) => {
       // Check if user is authenticated
-      const userId = ctx.session?.user?.id;
+      const userId = Number(ctx.session?.user?.id);
       if (!userId) {
         throw new Error('Unauthorized');
       }
@@ -35,7 +37,7 @@ export const noteRouter = router({
     }
 
     // Fetch notes for the authenticated user
-    const userNotes = await db.select().from(notes).where('user_id', userId);
+    const userNotes = await db.select().from(notes).where(eq(notes.userId, Number(userId)));
     return userNotes;
   }),
 });
