@@ -3,9 +3,14 @@ import { userRouter } from './routers/user';
 import { fileRouter } from './routers/file';
 import { noteRouter } from './routers/note';
 import { photoRouter } from './routers/photo';
-import { openApiIntegration } from '@trpc/openapi';
+import { openApiIntegration } from 'trpc-openapi';
 
-export const appRouter = router()
+const openApi = openApiIntegration({
+  basePath: '/api',
+  apiKey: process.env.API_KEY!,
+});
+
+export const appRouter = router({})
   .merge('user.', userRouter)
   .merge('file.', fileRouter)
   .merge('note.', noteRouter)

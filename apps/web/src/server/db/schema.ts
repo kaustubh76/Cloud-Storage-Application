@@ -5,7 +5,7 @@ export const users = pgTable('users', {
   name: varchar('name', { length: 256 }).notNull(),
   email: varchar('email', { length: 256 }).unique().notNull(),
   createdAt: timestamp('created_at').defaultNow(),
-  
+
 });
 
 export const files = pgTable('files', {
@@ -43,7 +43,6 @@ export const authenticators = pgTable('authenticators', {
   credentialPublicKey: text('credential_public_key').notNull(),
   counter: integer('counter').notNull(),
   credentialDeviceType: text('credential_device_type').notNull(),
-  credentialBackedUp: boolean('credential_backed_up').notNull(),
   transports: text('transports'),
 });
 
