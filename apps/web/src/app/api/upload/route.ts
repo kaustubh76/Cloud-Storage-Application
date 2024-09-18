@@ -1,20 +1,21 @@
-import { UploadThing, type FileRouter } from 'uploadthing/next-legacy';
-import { NextResponse } from 'next/server';
+import { createUploadthing } from 'uploadthing/next-legacy';
+import type { FileRouter } from 'uploadthing/next-legacy';
 import { db } from './../../../server/db';
 
-const f = new UploadThing();
+const f = createUploadthing();
 
 const ourFileRouter: FileRouter = {
   imageUploader: f({
     image: {
       maxFileSize: '4MB',
-      maxFiles: 10,
     },
   }).onUploadComplete(async ({ metadata, file }) => {
+
+    const userId = metadata.userId;
     // Save file metadata to the database
-    if (!metadata.userId) return;
+    if (!userId) return;
     await db.insertInto('files').values({
-      userId: metadata.userId,
+      userId:userId,
       filename: file.originalFilename,
       size: file.size,
       url: file.url,

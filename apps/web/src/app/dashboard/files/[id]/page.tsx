@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { trpc } from '@/lib/trpc';
+import trpc from '../../../../lib/trpc';
 const FileDetailPage = () => {
   const router = useRouter();
   const { id } = router.query;

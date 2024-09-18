@@ -3,9 +3,16 @@ import { getServerSession } from 'next-auth';
 import { NextApiRequest, NextApiResponse } from 'next';
 import authOptions from './../lib/auth';
 
-export async function createContext({ req, res }: { req: NextApiRequest; res: NextApiResponse }) {
-  const session = await getServerSession(req, res, authOptions);
+import { Session } from 'next-auth';
+import { getSession } from 'next-auth/react';
+
+export async function createContext({ req, res }: { req: NextApiRequest, res: NextApiResponse }): Promise<Context> {
+  const session = await getSession({ req });
   return { req, res, session };
 }
 
-export type Context = ReturnType<typeof createContext>;
+export interface Context {
+  req: NextApiRequest;
+  res: NextApiResponse;
+  session: Session | null;
+}

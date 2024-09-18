@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import { db } from './../../../server/db';
-import { photos } from './../../../server/db/schema';
+import { db } from '../../../server/db';
+import { photos } from '../../../server/db/schema';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });

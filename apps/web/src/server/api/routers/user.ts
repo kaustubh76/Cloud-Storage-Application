@@ -15,5 +15,27 @@
 //   // TODO: Add more user-related procedures
 // });
 
+import { t } from '../../../lib/trpc';
+import { z } from 'zod';
+import { apiKeyMiddleware } from '../../../middleware/apiKeyMiddleware';
+import { AnyRouter } from '@trpc/server';
+
+// Define the user router with OpenAPI methods
+export const userRouter: AnyRouter  = t.router({
+  getUser: t.procedure
+    .use(apiKeyMiddleware) // Use API Key middleware
+    .input(z.object({
+      id: z.string(),
+    }))
+    .query(async ({ input }: { input: { id: string } }) => {
+      // Fetch user by ID (dummy data for demonstration)
+      const user = {
+        id: input.id,
+        name: 'John Doe',
+      };
+      return user;
+    }),
+});
+
 
 

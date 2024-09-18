@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { db } from '../../db';
 import { files } from '../../db/schema';
 import { eq } from 'drizzle-orm';
+import { Context } from '../../../lib/context';
 
 export const fileRouter = router({
   uploadFile: publicProcedure
@@ -11,7 +12,7 @@ export const fileRouter = router({
       size: z.number(),
       url: z.string(),
     }))
-    .mutation(async ({ input, ctx }) => {
+    .mutation(async ({ input, ctx }: { input: any, ctx: Context }) => {
       // TODO: Implement type safety
       // Check if user is authenticated
       const userId = ctx.session?.user?.id;

@@ -1,11 +1,37 @@
 // apps/web/src/app/dashboard/page.tsx
-import UserProfile from './../../components/Dashboard/UserProfile';
-import PhotosSection from './../../components/Dashboard/PhotosSection';
-import DriveSection from './../../components/Dashboard/DriveSection';
-import NotesSection from './../../components/Dashboard/NotesSection';
+import UserProfile from '../../components/Dashboard/UserProfile';
+import PhotosSection from '../../components/Dashboard/PhotosSection';
+import DriveSection from '../../components/Dashboard/DriveSection';
+import NotesSection from '../../components/Dashboard/NotesSection';
 import { getSession } from 'next-auth/react';
-import { db } from './../../server/db';
-import { photos, files, notes } from './../../server/db/schema';
+import { Session } from 'next-auth';
+import { db } from '../../server/db';
+import { photos, files, notes } from '../../server/db/schema';
+
+interface Photo {
+  id: string;
+  url: string;
+  // Add other fields as necessary
+}
+
+interface File {
+  id: string;
+  name: string;
+  // Add other fields as necessary
+}
+
+interface Note {
+  id: string;
+  content: string;
+  // Add other fields as necessary
+}
+
+interface DashboardProps {
+  session: Session;
+  photos: Photo[];
+  files: File[];
+  notes: Note[];
+}
 
 // Fetch data on the server
 export async function getServerSideProps(context: any) {
@@ -36,7 +62,7 @@ export async function getServerSideProps(context: any) {
   };
 }
 
-const DashboardPage = ({ session, photos, files, notes }: any) => {
+const DashboardPage = ({ session, photos, files, notes }: DashboardProps) => {
   return (
     <div className="p-4">
       <UserProfile session={session} />
