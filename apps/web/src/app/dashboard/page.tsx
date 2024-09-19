@@ -1,4 +1,4 @@
-// apps/web/src/app/dashboard/page.tsx
+
 import UserProfile from '../../components/Dashboard/UserProfile';
 import PhotosSection from '../../components/Dashboard/PhotosSection';
 import DriveSection from '../../components/Dashboard/DriveSection';
