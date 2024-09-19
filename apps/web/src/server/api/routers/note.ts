@@ -30,11 +30,7 @@ export const noteRouter = router({
       return newNote;
     }),
 
-  getNotes: publicProcedure
-  .input(z.object({
-    id: z.number(),
-  }))
-  .query(async ({ ctx }) => {
+  getNotes: publicProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user?.id;
     if (!userId) {
       throw new Error('Unauthorized');
@@ -44,32 +40,4 @@ export const noteRouter = router({
     const userNotes = await db.select().from(notes).where(eq(notes.userId, Number(userId)));
     return userNotes;
   }),
-
-  updateNote: publicProcedure
-    .input(z.object({
-      id: z.number(),
-      title: z.string(),
-      content: z.string(),
-    }))
-    .mutation(async ({ input, ctx }) => {
-      // Check if user is authenticated
-      const userId = ctx.session?.user?.id;
-      if (!userId) {
-        throw new Error('Unauthorized');
-      }
-
-      // Update note in the database
-      const updatedNote = await db.update(notes)
-        .set({
-          title: input.title,
-          content: input.content,
-          updatedAt: new Date(),
-        })
-        .where(eq(notes.id, input.id))
-       // TODO: type defining
-       // .andwhere(eq(notes.userId, Number(userId)))
-        .returning();
-
-      return updatedNote;
-    }),
 });

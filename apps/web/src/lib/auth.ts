@@ -1,39 +1,24 @@
-// lib/auth.ts
-import { getSession, GetSessionParams, getCsrfToken } from 'next-auth/react';
-import { JWT } from 'next-auth/jwt';
-import { getToken } from 'next-auth/jwt';
-import { GetServerSidePropsContext } from 'next';
+import NextAuth from "next-auth";
+import PassKeyProvider from "next-auth/providers/passkey";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "./../server/db";
 
-// 1. Helper function to get the current user session on the client-side
-export const fetchSession = async () => {
-  const session = await getSession();
-  return session;
+import { SessionStrategy } from "next-auth";
+
+const options = {
+  providers: [
+    PassKeyProvider({
+      name: "Passkey",
+      type: "passkey",
+      // Additional Passkey configuration
+    }),
+  ],
+  adapter: DrizzleAdapter(db),
+  secret: process.env.NEXTAUTH_SECRET,
+  experimental: { enableWebAuthn: true },
+  session: {
+    strategy: "jwt" as SessionStrategy,
+  },
 };
 
-// 2. Helper function to get the JWT token from cookies or headers (server-side)
-export const fetchToken = async (context: GetServerSidePropsContext) => {
-  const token = await getToken({ req: context.req });
-  return token as JWT;
-};
-
-// 3. Utility function for server-side authentication check (e.g., for protected pages)
-export const requireAuth = async (context: GetServerSidePropsContext) => {
-  const session = await getSession(context);
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  // Return session data if user is authenticated
-  return { props: { session } };
-};
-
-// 4. Function to fetch the CSRF token (useful for form submissions with NextAuth)
-export const fetchCsrfToken = async () => {
-  const csrfToken = await getCsrfToken();
-  return csrfToken;
-};
+export default NextAuth(options);

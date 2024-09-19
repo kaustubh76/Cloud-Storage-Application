@@ -1,21 +1,19 @@
-import { initTRPC } from '@trpc/server';
+import { router } from './../../lib/trpc';
 import { userRouter } from './routers/user';
 import { fileRouter } from './routers/file';
 import { noteRouter } from './routers/note';
 import { photoRouter } from './routers/photo';
-import { OpenApiMeta } from 'trpc-openapi';
-import { createContext } from '../../lib/context';
+import { openApiIntegration } from '@trpc/openapi';
 
-const t = initTRPC.meta<OpenApiMeta>().context<ReturnType<typeof createContext>>().create();
+export const appRouter = router()
+  .merge('user.', userRouter)
+  .merge('file.', fileRouter)
+  .merge('note.', noteRouter)
+  .merge('photo.', photoRouter)
+  .transformer(openApiIntegration({
+    basePath: '/api',
+    apiKey: process.env.API_KEY!,
+  }));
 
-// Create the main tRPC router
-import { AnyRouter } from '@trpc/server';
-
-export const appRouter: AnyRouter = t.router({
-  user: userRouter,
-  file: fileRouter,
-  note: noteRouter,
-  photo: photoRouter,
-});
-
+// Export type definition of API
 export type AppRouter = typeof appRouter;
